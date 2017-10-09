@@ -12,30 +12,17 @@ class comments2 extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+     public function __construct()
+     {
+      $this->middleware('auth');
+     }
     public function index()
     {
-        echo "Hello world";
+      return view('comments.index');
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(request $request)
     {
-    	
+
     	$co = $request->all();
         $content = $co['content'];
           $id_video = $co['id_video'];
@@ -48,7 +35,7 @@ class comments2 extends Controller
        DB::table('comments')->insert(['content' => $content,'id_ower' => Auth::user()->id,'id_video' => $id_video]);
             return back()->withInput();
           }
-           
+
     }
 
     /**
@@ -59,38 +46,16 @@ class comments2 extends Controller
      */
     public function show($id)
     {
-       
+      if(DB::table('comments')->where('id',$id)->count()==0)
+      {
+        return view('notfound');
+      }
+      else {
+        $comments = DB::table('comments')->where('id',$id)->get();
+return view('comments.show',compact('comments'));
+      }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   public function edit($id)
-    {
-        
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
        $coms = DB::table('comments')->where('id',$id)->get();
@@ -103,5 +68,15 @@ class comments2 extends Controller
        }
                return back()->withInput();
     }
-    
+public function edit($id)
+{
+  if(DB::table('comments')->where('id',$id)->count()==0)
+  {
+    return view('notfound');
+  }
+  else {
+    $comments = DB::table('comments')->where('id',$id)->get();
+return view('comments.edit',compact('comments'));
+  }
+}
 }

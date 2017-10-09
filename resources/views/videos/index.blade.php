@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-    
+
     	 		 <div class="col-md-12">
         <div class="panel panel-default">
   <div class="panel-body">
@@ -49,7 +49,7 @@ $('.exedens2').attr('onclick','exdent()');
 	<strong><h4>{{$gets->name}}</h4></strong>
 	<strong><p>Opublikowano:{{$video->created_at}}</p></strong>
 	@if(Auth::user())
-	<a href="" class="btn btn-primary">@if(DB::table('subscribes')->where('ower_id',Auth::user()->id)->where('video_id',$video->id)->count()==0)Subskrybuj @else Subskrybujesz @endif <div class="badge">{{DB::table('subscribes')->where('video_id',$video->id)->count()}}</div></a>
+	<a href="" class="btn btn-primary">@if(DB::table('subscribes')->where('ower_id',Auth::user()->id)->where('profil_id',$gets->id)->count()==0)Subskrybuj @else Subskrybujesz @endif <div class="badge">{{DB::table('subscribes')->where('profil_id',$gets->id)->count()}}</div></a>
 	<br/>
 	<a href="{{route('likedown.show',$video->id)}}"><i class="fa fa-thumbs-up" aria-hidden="true" style='font-size:40px'></i></a>
 	<a href="{{route('likeup.show',$video->id)}}"><i class="fa fa-thumbs-down" aria-hidden="true" style='font-size:40px;'></i></a>
@@ -72,7 +72,6 @@ $('.exedens2').attr('onclick','exdent()');
 	<div class="panel-body">
      <form class="" method="POST" action='{{route('comments.store')}}'>
      	           {{ csrf_field() }}
-     	          
      	           <!--<input type="hidden" name="id_ower" value='{{Auth::user()->id}}'>!-->
      	           <input type="hidden" name="id_video" value='{{$video->id}}'>
 		<textarea name="content" id="" cols="30" rows="10" class="form-control" placeholder='Dodaj publiczny komentarz...'></textarea>
@@ -80,45 +79,61 @@ $('.exedens2').attr('onclick','exdent()');
 		</form>
 	</div>
 </div>
-		@endif
+@endif
 @if(DB::table('comments')->where('id_video',$video->id)->count()==0)
 <center><h4>Pod tym filmem nie ma żadnych komentarzy</h4></center>
 @else
 @foreach(DB::table('comments')->where('id_video',$video->id)->orderBy('id','desc')->paginate(6) as $comment)
 <div class="panel panel-default">
-	<div class="panel-body">
-		<h3>
-			@foreach(DB::table('users')->where('id',$comment->id_ower)->get() as $ower)
-				<a href="{{route('profil.show',$ower->id)}}"><img src='{{asset($ower->images)}}' width='40' class="img-circle"></img></a>
-			{{$ower->name}}
-			@endforeach
-		</h3>
-		<p>{{$comment->content}}</p>
-		@if(Auth::user())
-			@if(Auth::user()->id==$comment->id_ower)
-		<div class="dropdown">
-  <button id="dLabel" type="button" class='btn btn-default' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dLabel">
- <li><a href="{{route('comments.edit',$comment->id)}}">Edytuj</a></li>
-  <li><a href=""><form action="{{route('comments.destroy',$comment->id)}}" method='POST' id='form1'>
-  	{{ method_field('DELETE') }}
-  	    {{ csrf_field() }}
-  	<input type="submit" value="Usuń">
-  </form></a></li>
-  </ul>
+<div class="panel-body">
+<h3>
+  @foreach(DB::table('users')->where('id',$comment->id_ower)->get() as $ower)
+    <a href="{{route('profil.show',$ower->id)}}"><img src='{{asset($ower->images)}}' width='40' class="img-circle"></img></a>
+  {{$ower->name}}
+  @endforeach
+</h3>
+<p>{{$comment->content}}</p>
+@if(Auth::user())
+  @if(Auth::user()->id==$comment->id_ower)
+<div class="dropdown">
+<button id="dLabel" type="button" class='btn btn-default' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<span class="caret"></span>
+</button>
+<ul class="dropdown-menu" aria-labelledby="dLabel">
+<li><a href="{{route('comments.edit',$comment->id)}}">Edytuj</a></li>
+<li><a href=""><form action="{{route('comments.destroy',$comment->id)}}" method='POST' id='form1'>
+{{ method_field('DELETE') }}
+    {{ csrf_field() }}
+<input type="submit" value="Usuń">
+</form></a></li>
+</ul>
 </div>
-		@endif
-		@endif
-	</div>
+@endif
+@endif
+<div  class='btn btn-default' onclick='link{{$comment->id}}()'>Wygeneruj link do komentarza</div>
+<div class="input{{$comment->id}}">
+</div>
+<script>
+function link{{$comment->id}}()
+{
+if($('.input{{$comment->id}}').html()=='<input type="text" class="form-control" value="{{route("comments.show",$comment->id)}}" disabled="disabled">')
+{
+   $('.input{{$comment->id}}').html("");
+}
+else
+{
+$('.input{{$comment->id}}').html("<input type='text' class='form-control' value='{{route('comments.show',$comment->id)}}' disabled='disabled'>");
+}
+}
+</script>
+</div>
 </div>
 @endforeach
 @endif
 <center>{{DB::table('comments')->where('id_video',$video->id)->paginate(6)->links()}}</center>
 @endforeach
 @endforeach
- @endif
+@endif
 </div>
     </div>
 </div>

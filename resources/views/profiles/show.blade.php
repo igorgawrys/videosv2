@@ -8,7 +8,7 @@
         	<div class="panel panel-default">
         		<div class="panel-body">
         			<center><h4>Nie znaleziono takiego profilu</h4></center>
-        		</div> 
+        		</div>
         	</div>
         	@else
         	@foreach($profil as $profil)
@@ -25,13 +25,14 @@
   <div class="media-body">
     <h4 class="media-heading"><h3>{{$profil->name}}</h3></h4>
     @if(Auth::user())
+    <a href="" class="btn btn-primary">@if(DB::table('subscribes')->where('ower_id',Auth::user()->id)->where('profil_id',$profil->id)->count()==0)Subskrybuj @else Subskrybujesz @endif <div class="badge">{{DB::table('subscribes')->where('profil_id',$profil->id)->count()}}</div></a>
     @if($profil->name==Auth::user()->name)
     <div class="btn-group">
-                  <a href="" class="btn btn-default">Edytuj profil</a>    
-             <a href="" class="btn btn-default">Dodaj wideo</a>      
-                <a onclick='link()' class="btn btn-default">Link do profilu</a>  
+                  <a href="" class="btn btn-default">Edytuj profil</a>
+             <a href="" class="btn btn-default">Dodaj wideo</a>
+                <a onclick='link()' class="btn btn-default">Link do profilu</a>
                 <div class="input">
-                	
+
                 </div>
                 <script>
                function link()

@@ -26,3 +26,5 @@ Route::resource('screate','screate');
 Route::resource('screatevideo','screatevideo');
 Route::resource('screatesettings','screatesettings');
 Route::resource('screateaddvideo','screateaddvideo');
+Route::resource('wigets1','wigets1');
+Route::resource('wigets2','wigets2');
