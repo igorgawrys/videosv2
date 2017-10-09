@@ -12,10 +12,15 @@
                 Kto ostatnio cię subskrybował
               </div>
               <div class="panel-body">
+                @if(DB::table('subscribes')->where('profil_id',Auth::user()->id)->orderBy('id','desc')->limit(3)->count()==0)
+                Ostatnio nikt cię nie subsbrybował
+                          @else
                 <ol>
-            @foreach(DB::table('subscribes')->where('profil_id',Auth::user()->id)->orderBy('id','desc')->limit(3)->get() as $subscribe)
-            <li>{{DB::table('users')->where('id',$subscribe->ower_id)->value('name')}}</li>
-            @endforeach
+          @foreach(DB::table('subscribes')->where('profil_id',Auth::user()->id)->orderBy('id','desc')->limit(3)->get() as $subscribe)
+          <li>{{DB::table('users')->where('id',$subscribe->ower_id)->value('name')}}</li>
+          @endforeach
+        </ol>
+              @endif
               </div>
             	</div>
             </div>
